@@ -30,6 +30,8 @@ defined('ABSPATH') || exit;
  * same reasons: explicit > implicit, and prefixes are decided by the
  * composition root.
  */
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are log text, not HTML output.
+// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- The SQL is built via \$wpdb->prepare() into a local variable, which the sniffer cannot trace.
 final class FavoritesRepository
 {
     public function __construct(
@@ -44,6 +46,9 @@ final class FavoritesRepository
      * The pre-check is convenience for a clean 409 error message. The
      * real protection against duplicates is the UNIQUE INDEX on
      * (user_id, post_id) at the DB level — defense in depth.
+     *
+     * @throws FavoriteException If the favorite already exists.
+     * @throws \RuntimeException If the database insert fails.
      */
     public function add(int $user_id, int $post_id): Favorite
     {
@@ -79,6 +84,9 @@ final class FavoritesRepository
 
     /**
      * Removes a favorite. Throws if it doesn't exist.
+     *
+     * @throws FavoriteException If the favorite does not exist.
+     * @throws \RuntimeException If the database delete fails.
      */
     public function remove(int $user_id, int $post_id): void
     {
@@ -131,7 +139,7 @@ final class FavoritesRepository
      */
     public function list_for_user(int $user_id, int $page, int $per_page): array
     {
-        $offset = max(0, ($page - 1) * $per_page);
+        $offset = max(0, ( $page - 1 ) * $per_page);
 
         // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $sql = $this->wpdb->prepare(
@@ -143,7 +151,11 @@ final class FavoritesRepository
             $per_page,
             $offset
         );
-        $rows = $this->wpdb->get_results($sql) ?: [];
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is built via $wpdb->prepare() above.
+        $rows = $this->wpdb->get_results($sql);
+        if ( ! is_array($rows)) {
+            $rows = [];
+        }
         // phpcs:enable
 
         return array_map(
@@ -164,6 +176,7 @@ final class FavoritesRepository
         );
         // phpcs:enable
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is built via $wpdb->prepare() above.
         return (int) $this->wpdb->get_var($sql);
     }
 }

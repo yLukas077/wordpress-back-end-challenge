@@ -22,5 +22,5 @@ $table = $wpdb->prefix . 'apiki_favorites';
 // runs in a minimal bootstrap context). The literal table name is
 // duplicated here on purpose; if Plugin::TABLE_NAME ever changes, this
 // constant must change alongside it.
-// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- DROP TABLE is exactly what uninstall should do; caching/preparing does not apply.
 $wpdb->query("DROP TABLE IF EXISTS {$table}");

@@ -23,10 +23,10 @@ defined('ABSPATH') || exit;
  */
 final class Plugin
 {
-    public const VERSION         = '1.0.0';
-    public const REST_NAMESPACE  = 'apiki-favorites/v1';
-    public const TABLE_NAME      = 'apiki_favorites';
-    public const TEXT_DOMAIN     = 'apiki-favorites';
+    public const VERSION        = '1.0.0';
+    public const REST_NAMESPACE = 'apiki-favorites/v1';
+    public const TABLE_NAME     = 'apiki_favorites';
+    public const TEXT_DOMAIN    = 'apiki-favorites';
 
     /**
      * Wires the plugin into WordPress.

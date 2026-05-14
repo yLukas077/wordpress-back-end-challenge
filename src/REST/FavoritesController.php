@@ -66,7 +66,7 @@ final class FavoritesController extends WP_REST_Controller
                     'permission_callback' => [$this, 'permissions_check'],
                     'args'                => [
                         'post_id' => [
-                            'description'       => __('Post ID to favorite.', Plugin::TEXT_DOMAIN),
+                            'description'       => __('Post ID to favorite.', 'apiki-favorites'),
                             'type'              => 'integer',
                             'required'          => true,
                             'minimum'           => 1,
@@ -84,7 +84,7 @@ final class FavoritesController extends WP_REST_Controller
             [
                 'args' => [
                     'post_id' => [
-                        'description'       => __('Post ID to unfavorite.', Plugin::TEXT_DOMAIN),
+                        'description'       => __('Post ID to unfavorite.', 'apiki-favorites'),
                         'type'              => 'integer',
                         'required'          => true,
                         'sanitize_callback' => 'absint',
@@ -116,18 +116,18 @@ final class FavoritesController extends WP_REST_Controller
      */
     public function permissions_check(WP_REST_Request $request): bool|WP_Error
     {
-        if (!is_user_logged_in()) {
+        if ( ! is_user_logged_in()) {
             return new WP_Error(
                 'rest_forbidden_context',
-                __('You must be logged in to manage favorites.', Plugin::TEXT_DOMAIN),
+                __('You must be logged in to manage favorites.', 'apiki-favorites'),
                 ['status' => 401]
             );
         }
 
-        if (!current_user_can('read')) {
+        if ( ! current_user_can('read')) {
             return new WP_Error(
                 'rest_forbidden',
-                __('You are not allowed to manage favorites.', Plugin::TEXT_DOMAIN),
+                __('You are not allowed to manage favorites.', 'apiki-favorites'),
                 ['status' => 403]
             );
         }
@@ -159,7 +159,7 @@ final class FavoritesController extends WP_REST_Controller
         $response->header('X-WP-Total', (string) $total);
         $response->header(
             'X-WP-TotalPages',
-            (string) ($per_page > 0 ? (int) ceil($total / $per_page) : 0)
+            (string) ( $per_page > 0 ? (int) ceil($total / $per_page) : 0 )
         );
 
         return $response;
@@ -175,10 +175,10 @@ final class FavoritesController extends WP_REST_Controller
         $user_id = get_current_user_id();
         $post_id = (int) $request->get_param('post_id');
 
-        if (!$this->post_is_favoritable($post_id)) {
+        if ( ! $this->post_is_favoritable($post_id)) {
             return new WP_Error(
                 'rest_post_invalid',
-                __('Post does not exist or is not published.', Plugin::TEXT_DOMAIN),
+                __('Post does not exist or is not published.', 'apiki-favorites'),
                 ['status' => 404]
             );
         }
@@ -189,7 +189,7 @@ final class FavoritesController extends WP_REST_Controller
             return new WP_Error(
                 'rest_already_favorited',
                 $e->getMessage(),
-                ['status' => $e->getCode() ?: 409]
+                ['status' => $e->getCode() > 0 ? $e->getCode() : 409]
             );
         }
 
@@ -215,7 +215,7 @@ final class FavoritesController extends WP_REST_Controller
             return new WP_Error(
                 'rest_favorite_not_found',
                 $e->getMessage(),
-                ['status' => $e->getCode() ?: 404]
+                ['status' => $e->getCode() > 0 ? $e->getCode() : 404]
             );
         }
 
@@ -248,25 +248,25 @@ final class FavoritesController extends WP_REST_Controller
             'type'       => 'object',
             'properties' => [
                 'id' => [
-                    'description' => __('Unique favorite identifier.', Plugin::TEXT_DOMAIN),
+                    'description' => __('Unique favorite identifier.', 'apiki-favorites'),
                     'type'        => 'integer',
                     'context'     => ['view'],
                     'readonly'    => true,
                 ],
                 'user_id' => [
-                    'description' => __('User who favorited the post.', Plugin::TEXT_DOMAIN),
+                    'description' => __('User who favorited the post.', 'apiki-favorites'),
                     'type'        => 'integer',
                     'context'     => ['view'],
                     'readonly'    => true,
                 ],
                 'post_id' => [
-                    'description' => __('Favorited post ID.', Plugin::TEXT_DOMAIN),
+                    'description' => __('Favorited post ID.', 'apiki-favorites'),
                     'type'        => 'integer',
                     'context'     => ['view'],
                     'required'    => true,
                 ],
                 'created_at' => [
-                    'description' => __('When the favorite was created (UTC).', Plugin::TEXT_DOMAIN),
+                    'description' => __('When the favorite was created (UTC).', 'apiki-favorites'),
                     'type'        => 'string',
                     'format'      => 'date-time',
                     'context'     => ['view'],
@@ -285,14 +285,14 @@ final class FavoritesController extends WP_REST_Controller
     {
         return [
             'page' => [
-                'description'       => __('Current page of results.', Plugin::TEXT_DOMAIN),
+                'description'       => __('Current page of results.', 'apiki-favorites'),
                 'type'              => 'integer',
                 'default'           => 1,
                 'minimum'           => 1,
                 'sanitize_callback' => 'absint',
             ],
             'per_page' => [
-                'description'       => __('Items per page.', Plugin::TEXT_DOMAIN),
+                'description'       => __('Items per page.', 'apiki-favorites'),
                 'type'              => 'integer',
                 'default'           => 10,
                 'minimum'           => 1,

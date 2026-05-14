@@ -31,12 +31,16 @@ if (PHP_VERSION_ID < 80100) {
             esc_html__('Apiki Favorites requires PHP 8.1 or higher. You are running PHP %s.', 'apiki-favorites'),
             esc_html(PHP_VERSION)
         );
-        printf('<div class="notice notice-error"><p>%s</p></div>', $message);
+        printf(
+            '<div class="notice notice-error"><p>%s</p></div>',
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $message already built with esc_html__() above.
+            $message
+        );
     });
     return;
 }
 
-if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+if ( ! file_exists(__DIR__ . '/vendor/autoload.php')) {
     add_action('admin_notices', static function (): void {
         printf(
             '<div class="notice notice-error"><p>%s</p></div>',
