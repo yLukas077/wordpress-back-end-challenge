@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<ruleset name="Apiki Favorites">
+    <description>Coding standards for the Apiki Favorites plugin.</description>
+
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg value="sp"/>
+
+    <file>apiki-favorites.php</file>
+    <file>uninstall.php</file>
+    <file>src</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+
+    <rule ref="WordPress">
+        <!-- We use PSR-4 + namespaces, not WP underscore_file_names. -->
+        <exclude name="WordPress.Files.FileName"/>
+        <!-- Yoda conditions are a stylistic choice we don't enforce. -->
+        <exclude name="WordPress.PHP.YodaConditions"/>
+    </rule>
+
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array" value="apiki-favorites"/>
+        </properties>
+    </rule>
+
+    <config name="minimum_supported_wp_version" value="6.0"/>
+
+    <rule ref="PHPCompatibilityWP"/>
+    <config name="testVersion" value="8.1-"/>
+</ruleset>
