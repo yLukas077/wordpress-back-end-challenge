@@ -7,7 +7,7 @@
  * Version:           1.0.0
  * Requires at least: 6.0
  * Requires PHP:      8.1
- * Author:            Seu Nome
+ * Author:            Lucas Marques
  * License:           MIT
  * Text Domain:       apiki-favorites
  *

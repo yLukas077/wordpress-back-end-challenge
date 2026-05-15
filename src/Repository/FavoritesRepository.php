@@ -69,6 +69,10 @@ final class FavoritesRepository
         );
 
         if ($inserted === false) {
+            if (stripos($this->wpdb->last_error, 'duplicate') !== false) {
+                throw FavoriteException::already_exists($user_id, $post_id);
+            }
+
             throw new \RuntimeException(
                 'Failed to insert favorite: ' . $this->wpdb->last_error
             );
